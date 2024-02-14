@@ -14,10 +14,10 @@ export class ImagesService {
   constructor(@InjectModel(Image.name) private repo: Model<Image>) {}
 
   async saveImage(file: Express.Multer.File) {
-    debugger;
+     
     const path = await this._saveFile(file);
     const imageDoc = await this._saveToDB(path);
-    debugger;
+     
     return imageDoc;
   }
 
@@ -31,7 +31,7 @@ export class ImagesService {
   private async _saveFile(file: Express.Multer.File) {
     const uniqueFileName = `${Date.now()}-${uuidv4()}.${file.originalname.split('.').pop()}`;
     const filePath = join('public/images', uniqueFileName);
-    debugger;
+     
 
     // Check if the 'public' directory exists, create it if not
     if (!existsSync('public')) {

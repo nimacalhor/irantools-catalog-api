@@ -37,9 +37,9 @@ export class BrandsController {
     @Param('brandId') brandId: string,
     @Body() body: UpdateBrandDto,
   ) {
-    debugger;
+     
     const updatedBrand = await this.brandsService.updateBrand(brandId, body);
-    debugger;
+     
     return { ok: true, brand: updatedBrand };
   }
 

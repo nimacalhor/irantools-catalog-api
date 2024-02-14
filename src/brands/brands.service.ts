@@ -31,7 +31,7 @@ export class BrandsService {
 
   async deleteBrand(brandId: string) {
     const brand = await this.brandModel.findById(brandId);
-    debugger;
+     
     if (!brand)
       throw new NotFoundException(`no brand found with id ${brandId}`);
     await this.imageService.deleteImage(brand.image as unknown as string);
@@ -39,7 +39,7 @@ export class BrandsService {
   }
 
   async updateBrand(id: string, updateBrandData: UpdateBrandDto) {
-    debugger;
+     
     if (!updateBrandData.image) {
       const newBrand = await this.brandModel.findByIdAndUpdate(
         id,
@@ -51,7 +51,7 @@ export class BrandsService {
       );
       if (!newBrand)
         throw new NotFoundException(`no brand found with id ${id}`);
-      debugger;
+       
       return newBrand;
     }
     // 90881
@@ -64,7 +64,7 @@ export class BrandsService {
       updateBrandData,
       { runValidators: true, new: true },
     );
-    debugger;
+     
     await this.imageService.deleteImage(oldBrand.image as unknown as string);
     return newBrand;
   }

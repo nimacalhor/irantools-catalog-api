@@ -26,7 +26,7 @@ export class ImagesController {
     file: Express.Multer.File,
   ) {
     const image = await this.imagesService.saveImage(file);
-    debugger;
+     
     return { ok: true, image };
   }
 
