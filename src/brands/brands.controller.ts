@@ -14,6 +14,7 @@ import { BrandsService } from './brands.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { GetBrandsQueryDto } from './dto/get-brand-query.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
+import { PaginateOptions } from 'mongoose';
 
 @Controller('brands')
 export class BrandsController {
@@ -21,14 +22,12 @@ export class BrandsController {
   constructor(private brandsService: BrandsService) {}
 
   @Get()
-  getBrandList(
-    @Query(ValidationPipe, ModifyPaginationPipe) query: GetBrandsQueryDto,
-  ) {
-    return this.brandsService.getBrandList(query);
+  getBrandList(@Query(ModifyPaginationPipe) query: GetBrandsQueryDto) {
+    return this.brandsService.getBrandList(query as unknown as PaginateOptions);
   }
 
   @Post()
-  async createBrand(@Body(ValidationPipe) body: CreateBrandDto) {
+  async createBrand(@Body() body: CreateBrandDto) {
     const newBrand = await this.brandsService.createBrand(body);
     return { ok: true, brand: newBrand };
   }
@@ -36,9 +35,11 @@ export class BrandsController {
   @Put('/:brandId')
   async updateBrand(
     @Param('brandId') brandId: string,
-    @Body(ValidationPipe) body: UpdateBrandDto,
+    @Body() body: UpdateBrandDto,
   ) {
+    debugger;
     const updatedBrand = await this.brandsService.updateBrand(brandId, body);
+    debugger;
     return { ok: true, brand: updatedBrand };
   }
 

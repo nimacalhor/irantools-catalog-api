@@ -5,11 +5,11 @@ export class GetBrandsQueryDto {
   //
   @IsNumberString()
   @IsOptional()
-  limit?: string = D_LIMIT+"";
+  limit?: string = D_LIMIT + '';
 
   @IsNumberString()
   @IsOptional()
-  page?: string = D_PAGE+"";
+  page?: string = D_PAGE + '';
 
   @IsString()
   @IsOptional()

@@ -6,7 +6,7 @@ import { Response } from 'express';
 
 @Catch(MongooseError, MongooseNativeError)
 export class MongooseExceptionFilter implements ExceptionFilter {
-  catch(exception: MongooseError, host: ArgumentsHost) {
+  catch(exception: MongooseError | MongooseNativeError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
@@ -31,6 +31,7 @@ export class MongooseExceptionFilter implements ExceptionFilter {
       message = 'Document Not Found';
       details = { ...exception }; // Extract document details
     }
+    //
 
     response.status(statusCode).json({
       statusCode,

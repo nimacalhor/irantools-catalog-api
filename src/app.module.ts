@@ -6,12 +6,19 @@ import { CategoriesModule } from './categories/categories.module';
 import { ToolsModule } from './tools/tools.module';
 import { ImagesModule } from './images/images.module';
 import mongoDBConfig from './config/mongoDB.config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     MongooseModule.forRootAsync({
       useFactory: () => mongoDBConfig(),
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
     }),
     BrandsModule,
     CategoriesModule,
