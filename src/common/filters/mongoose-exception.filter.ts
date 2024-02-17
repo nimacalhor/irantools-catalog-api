@@ -17,23 +17,15 @@ export class MongooseExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    let statusCode = 500;
-    let message = 'Internal Server Error';
+    let errRes: ErrorReturnType;
 
-    if (exception instanceof MongooseNativeError.ValidationError) {
-      statusCode = 400;
-      message = 'Validation Error';
-    }
+    if (exception instanceof MongooseNativeError.ValidationError)
+      errRes = this._handleValidationError(exception);
     //
-    else if (exception instanceof MongooseNativeError.CastError) {
-      statusCode = 400;
-      message = 'Invalid Cast';
-    }
+    else if (exception instanceof MongooseNativeError.CastError)
+      errRes = this._handleCastError(exception);
 
-    response.status(statusCode).json({
-      statusCode,
-      message,
-    });
+    response.status(HttpStatus.BAD_REQUEST).json(errRes);
   }
 
   private _handleValidationError(
