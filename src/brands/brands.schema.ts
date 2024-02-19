@@ -7,7 +7,7 @@ export type BrandDocument = HydratedDocument<Brand>;
 
 @Schema()
 export class Brand {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   title: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Image' })

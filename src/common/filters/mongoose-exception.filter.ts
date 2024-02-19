@@ -9,7 +9,7 @@ import { MongooseError, Error as MongooseNativeError } from 'mongoose';
 import { Response } from 'express';
 import { ErrorReturnType } from '../common.interface';
 import { ERROR_CODES } from '../common.constants';
-import { MongoError } from 'mongodb';
+import { MongoError, MongoServerError } from 'mongodb';
 
 @Catch(MongoError, MongooseError)
 export class MongooseExceptionFilter
@@ -19,31 +19,19 @@ export class MongooseExceptionFilter
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    let errRes: ErrorReturnType = {
-      data: {},
-      errorCode: ERROR_CODES.SERVER_ERROR,
-      errorMessage: 'unknown error',
-      ok: false,
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-    };
+    let errRes: ErrorReturnType = this._getDefaultErrRes();
 
     if (exception instanceof MongooseNativeError.ValidationError)
       errRes = this._handleValidationError(exception);
     //
     else if (exception instanceof MongooseNativeError.CastError)
       errRes = this._handleCastError(exception);
-    else if (
-      exception instanceof MongooseNativeError.MongooseServerSelectionError
-    )
-      debugger;
+    //
+    else if (exception instanceof MongoServerError)
+      errRes = this._handleMongoError(exception);
 
     debugger;
-    if (!errRes)
-      throw new BadRequestException({
-        data: {},
-        errorCode: ERROR_CODES.SERVER_ERROR,
-        errorMessage: 'unkown',
-      } as ErrorReturnType);
+    if (!errRes) throw this._getDefaultErr();
 
     response.status(HttpStatus.BAD_REQUEST).json(errRes);
   }
@@ -75,5 +63,34 @@ export class MongooseExceptionFilter
       statusCode: HttpStatus.BAD_REQUEST,
     };
     return result;
+  }
+
+  private _handleMongoError(err: MongoServerError): ErrorReturnType {
+    const { message } = err;
+    return {
+      data: { keyValues: Object.values(err.keyValue) },
+      errorCode: ERROR_CODES.DUPLICATE_KEY,
+      errorMessage: `${message}`,
+      ok: false,
+      statusCode: HttpStatus.BAD_REQUEST,
+    };
+  }
+
+  private _getDefaultErr() {
+    return new BadRequestException({
+      data: {},
+      errorCode: ERROR_CODES.UNKNOWN_MONGO_ERROR,
+      errorMessage: 'unknown Mongo/Mongoose error',
+    } as ErrorReturnType);
+  }
+
+  private _getDefaultErrRes() {
+    return {
+      data: {},
+      errorCode: ERROR_CODES.SERVER_ERROR,
+      errorMessage: 'unknown error',
+      ok: false,
+      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+    };
   }
 }
