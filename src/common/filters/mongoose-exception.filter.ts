@@ -5,18 +5,32 @@ import {
   Catch,
   ArgumentsHost,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { MongooseError, Error as MongooseNativeError } from 'mongoose';
 import { Response } from 'express';
 import { ErrorReturnType } from '../common.interface';
 import { ERROR_CODES } from '../common.constants';
+import { MongoError } from 'mongodb';
 
-@Catch(MongooseError, MongooseNativeError)
-export class MongooseExceptionFilter implements ExceptionFilter {
-  catch(exception: MongooseError | MongooseNativeError, host: ArgumentsHost) {
+@Catch(MongoError, MongooseError)
+export class MongooseExceptionFilter
+  implements ExceptionFilter<MongooseError | MongooseNativeError>
+{
+  catch(exception, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
+    // let errRes: ErrorReturnType = {
+    //   data: {},
+    //   errorCode: ERROR_CODES.SERVER_ERROR,
+    //   errorMessage: 'unknown error',
+    //   ok: false,
+    //   statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+    // };
+    debugger;
+    const errorData = typeof exception;
+    const errorInstance = Object.getPrototypeOf(exception);
     let errRes: ErrorReturnType;
 
     if (exception instanceof MongooseNativeError.ValidationError)
@@ -24,6 +38,18 @@ export class MongooseExceptionFilter implements ExceptionFilter {
     //
     else if (exception instanceof MongooseNativeError.CastError)
       errRes = this._handleCastError(exception);
+    else if (
+      exception instanceof MongooseNativeError.MongooseServerSelectionError
+    )
+      debugger;
+
+    debugger;
+    if (!errRes)
+      throw new BadRequestException({
+        data: {},
+        errorCode: ERROR_CODES.SERVER_ERROR,
+        errorMessage: 'unkown',
+      } as ErrorReturnType);
 
     response.status(HttpStatus.BAD_REQUEST).json(errRes);
   }
@@ -31,6 +57,7 @@ export class MongooseExceptionFilter implements ExceptionFilter {
   private _handleValidationError(
     err: MongooseNativeError.ValidationError,
   ): ErrorReturnType {
+    debugger;
     const { errors } = err;
     const result: ErrorReturnType = {
       ok: false,
@@ -45,6 +72,7 @@ export class MongooseExceptionFilter implements ExceptionFilter {
   private _handleCastError(
     err: MongooseNativeError.CastError,
   ): ErrorReturnType {
+    debugger;
     const result: ErrorReturnType = {
       ok: false,
       data: err,

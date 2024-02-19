@@ -55,7 +55,7 @@ export class Tool implements ToolInterface {
   @Prop({ required: true, type: Types.ObjectId, ref: 'Image' })
   image: Image;
 
-  @Prop({ required: true })
+  @Prop()
   description: string;
 
   @Prop({ required: true })

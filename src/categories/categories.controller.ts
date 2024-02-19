@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  UseFilters,
 } from '@nestjs/common';
 import { PaginateOptions } from 'mongoose';
 import { ModifyPaginationPipe } from 'src/common/pipes/modify-pagination.pipe';
@@ -17,7 +18,9 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { GetCategoriesQueryDto } from './dto/get-category-query.dto';
 import { ControllerReturnType } from 'src/common/common.interface';
+import { MongooseExceptionFilter } from 'src/common/filters/mongoose-exception.filter';
 
+@UseFilters(MongooseExceptionFilter)
 @Controller('categories')
 export class CategoriesController {
   //

@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  UseFilters,
 } from '@nestjs/common';
 import { ModifyPaginationPipe } from 'src/common/pipes/modify-pagination.pipe';
 import { ToolsService } from './tools.service';
@@ -17,7 +18,9 @@ import { PaginateOptions } from 'mongoose';
 import { CreateToolDto } from './dto/create-tool.dto';
 import { UpdateToolDto } from './dto/update-tool.dto';
 import { ControllerReturnType } from 'src/common/common.interface';
+import { MongooseExceptionFilter } from 'src/common/filters/mongoose-exception.filter';
 
+@UseFilters(MongooseExceptionFilter)
 @Controller('tools')
 export class ToolsController {
   //

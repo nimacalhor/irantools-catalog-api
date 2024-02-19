@@ -15,9 +15,12 @@ export class CategoriesService {
     private imageService: ImagesService,
   ) {}
 
-  createCategory(createCategoryData: CreateCategoryDto) {
+  async createCategory(createCategoryData: CreateCategoryDto) {
+    const { image } = createCategoryData;
+    const doseImageExists = await this.imageService.isValid(image);
+    if (!doseImageExists) throw new DocNotFoundException('Image', image);
     const newCategory = new this.categoryModel(createCategoryData);
-    return newCategory.save();
+    return (await newCategory.save()).populate('image');
   }
 
   async deleteCategory(categoryId: string) {
@@ -36,13 +39,19 @@ export class CategoriesService {
         {
           runValidators: true,
           new: true,
+          populate: 'image',
         },
       );
       if (!newCategory) throw new DocNotFoundException(Category.name, id);
 
       return newCategory;
     }
-    // 90881
+
+    const doseImageExists = await this.imageService.isValid(
+      updateCategoryData.image,
+    );
+    if (!doseImageExists)
+      throw new DocNotFoundException('Image', updateCategoryData.image);
 
     const oldCategory = await this.categoryModel.findById(id);
     if (!oldCategory) throw new DocNotFoundException(Category.name, id);
@@ -50,7 +59,7 @@ export class CategoriesService {
     const newCategory = await this.categoryModel.findByIdAndUpdate(
       id,
       updateCategoryData,
-      { runValidators: true, new: true },
+      { runValidators: true, new: true, populate: 'image' },
     );
 
     await this.imageService.deleteImage(oldCategory.image as unknown as string);

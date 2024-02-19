@@ -82,6 +82,7 @@ export class CreateToolDto
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   description: string;
 
   @ApiProperty()

@@ -14,7 +14,7 @@ export class ApiKeyGuard implements CanActivate {
 
   private _isValid(req: Request) {
     const { authorization } = req.headers;
-    debugger;
+     
     return authorization === process.env.API_KEY
   }
 }

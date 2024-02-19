@@ -14,24 +14,28 @@ export class ImagesService {
   constructor(@InjectModel(Image.name) private repo: Model<Image>) {}
 
   async saveImage(file: Express.Multer.File) {
-     
     const path = await this._saveFile(file);
     const imageDoc = await this._saveToDB(path);
-     
+
     return imageDoc;
   }
 
   async deleteImage(imageId: string) {
     const image = await this.repo.findById(imageId);
+    if (!image) return;
     await this._removeFile(image.path);
     return await this.repo.findByIdAndDelete(imageId);
   }
 
+  async isValid(imageId?: string) {
+    if (!imageId) return false;
+    const image = await this.repo.findById(imageId);
+    return !!image;
+  }
 
   private async _saveFile(file: Express.Multer.File) {
     const uniqueFileName = `${Date.now()}-${uuidv4()}.${file.originalname.split('.').pop()}`;
     const filePath = join('public/images', uniqueFileName);
-     
 
     // Check if the 'public' directory exists, create it if not
     if (!existsSync('public')) {

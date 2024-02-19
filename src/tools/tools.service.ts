@@ -17,9 +17,12 @@ export class ToolsService {
     private imageService: ImagesService,
   ) {}
   //
-  createTool(createToolData: CreateToolDto) {
+  async createTool(createToolData: CreateToolDto) {
+    const { image } = createToolData;
+    const doseImageExists = await this.imageService.isValid(image);
+    if (!doseImageExists) throw new DocNotFoundException('Image', image);
     const newTool = new this.toolModel(createToolData);
-    return newTool.save();
+    return (await newTool.save()).populate(this._toolPopulate);
   }
 
   async deleteTool(toolId: string) {
@@ -38,13 +41,19 @@ export class ToolsService {
         {
           runValidators: true,
           new: true,
+          populate: this._toolPopulate,
         },
       );
       if (!newTool) throw new DocNotFoundException(Tool.name, id);
 
       return newTool;
     }
-    // 90881
+
+    const doseImageExists = await this.imageService.isValid(
+      updateToolData.image,
+    );
+    if (!doseImageExists)
+      throw new DocNotFoundException('Image', updateToolData.image);
 
     const oldTool = await this.toolModel.findById(id);
     if (!oldTool) throw new DocNotFoundException(Tool.name, id);
@@ -52,6 +61,7 @@ export class ToolsService {
     const newTool = await this.toolModel.findByIdAndUpdate(id, updateToolData, {
       runValidators: true,
       new: true,
+      populate: this._toolPopulate,
     });
 
     await this.imageService.deleteImage(oldTool.image as unknown as string);
