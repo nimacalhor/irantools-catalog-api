@@ -1,5 +1,3 @@
-// src/common/filters/mongoose-exception.filter.ts
-
 import {
   ExceptionFilter,
   Catch,
@@ -21,17 +19,13 @@ export class MongooseExceptionFilter
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    // let errRes: ErrorReturnType = {
-    //   data: {},
-    //   errorCode: ERROR_CODES.SERVER_ERROR,
-    //   errorMessage: 'unknown error',
-    //   ok: false,
-    //   statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-    // };
-    debugger;
-    const errorData = typeof exception;
-    const errorInstance = Object.getPrototypeOf(exception);
-    let errRes: ErrorReturnType;
+    let errRes: ErrorReturnType = {
+      data: {},
+      errorCode: ERROR_CODES.SERVER_ERROR,
+      errorMessage: 'unknown error',
+      ok: false,
+      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+    };
 
     if (exception instanceof MongooseNativeError.ValidationError)
       errRes = this._handleValidationError(exception);
