@@ -46,6 +46,19 @@ export class ToolsController {
     };
   }
 
+  @Get('/:toolId')
+  @HttpCode(HttpStatus.OK)
+  async getToolDetail(@Param('toolId') toolId: string): ControllerReturnType {
+    console.log({toolId});
+    const tool = await this.toolsService.getTool(toolId);
+
+    return {
+      ok: true,
+      data: tool,
+      statusCode: HttpStatus.OK,
+    };
+  }
+
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createTool(@Body() body: CreateToolDto): ControllerReturnType {

@@ -17,6 +17,6 @@ async function bootstrap() {
   app.useGlobalFilters(new MongooseExceptionFilter());
   app.useGlobalGuards(new ApiKeyGuard());
   app.enableCors({ origin: ['http://127.0.0.1:4000'] });
-  await app.listen(3000);
+  await app.listen(4000);
 }
 bootstrap();
