@@ -6,6 +6,7 @@ import { ImagesService } from 'src/images/images.service';
 import { Brand } from './brands.schema';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
+import { ToolsService } from 'src/tools/tools.service';
 
 @Injectable()
 export class BrandsService {
@@ -13,6 +14,7 @@ export class BrandsService {
   constructor(
     @InjectModel(Brand.name) private brandModel: PaginateModel<Brand>,
     private imageService: ImagesService,
+    private toolService: ToolsService,
   ) {}
   //
   async createBrand(createBrandData: CreateBrandDto) {
@@ -28,6 +30,8 @@ export class BrandsService {
 
     if (!brand) throw new DocNotFoundException(Brand.name, brandId);
     await this.imageService.deleteImage(brand.image as unknown as string);
+    await this.toolService.deleteToolsBrand(brand._id);
+
     return await this.brandModel.findByIdAndDelete(brandId);
   }
 

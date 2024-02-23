@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Tool } from './tools.schema';
-import { PaginateModel, PaginateOptions } from 'mongoose';
+import { FilterQuery, PaginateModel, PaginateOptions } from 'mongoose';
 import { ImagesService } from 'src/images/images.service';
 import { CreateToolDto } from './dto/create-tool.dto';
 import { UpdateToolDto } from './dto/update-tool.dto';
 import { DocNotFoundException } from 'src/common/exceptions/doc-not-found.exception';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class ToolsService {
@@ -81,6 +82,19 @@ export class ToolsService {
       .populate(this._toolPopulate);
     if (!tool) throw new DocNotFoundException(Tool.name, toolId);
     return tool;
+  }
+
+  async deleteToolsBrand(brandId: string | ObjectId) {
+    await this.toolModel.updateMany({ brand: brandId }, { brand: null });
+    return;
+  }
+
+  async deleteToolsCategory(categoryId: string | ObjectId) {
+    await this.toolModel.updateMany(
+      { category: categoryId },
+      { category: null },
+    );
+    return;
   }
 
   //

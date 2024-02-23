@@ -21,5 +21,6 @@ import { ImagesModule } from 'src/images/images.module';
   ],
   controllers: [ToolsController],
   providers: [ToolsService],
+  exports: [ToolsService],
 })
 export class ToolsModule {}

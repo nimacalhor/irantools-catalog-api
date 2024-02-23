@@ -6,6 +6,7 @@ import { ImagesService } from 'src/images/images.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { DocNotFoundException } from 'src/common/exceptions/doc-not-found.exception';
+import { ToolsService } from 'src/tools/tools.service';
 
 @Injectable()
 export class CategoriesService {
@@ -13,6 +14,7 @@ export class CategoriesService {
   constructor(
     @InjectModel(Category.name) private categoryModel: PaginateModel<Category>,
     private imageService: ImagesService,
+    private toolsService: ToolsService,
   ) {}
 
   async createCategory(createCategoryData: CreateCategoryDto) {
@@ -27,7 +29,10 @@ export class CategoriesService {
     const category = await this.categoryModel.findById(categoryId);
 
     if (!category) throw new DocNotFoundException(Category.name, categoryId);
+
     await this.imageService.deleteImage(category.image as unknown as string);
+    await this.toolsService.deleteToolsCategory(category._id);
+
     return await this.categoryModel.findByIdAndDelete(categoryId);
   }
 

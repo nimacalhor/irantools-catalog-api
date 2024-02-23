@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CategoriesService } from './categories.service';
 import { Category, categorySchema } from './categories.schema';
 import { ImagesModule } from 'src/images/images.module';
+import { ToolsModule } from 'src/tools/tools.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ImagesModule } from 'src/images/images.module';
       },
     ]),
     ImagesModule,
+    ToolsModule
   ],
   controllers: [CategoriesController],
   providers: [CategoriesService],

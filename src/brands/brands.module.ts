@@ -4,6 +4,7 @@ import { BrandsService } from './brands.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BrandSchema, Brand } from './brands.schema';
 import { ImagesModule } from 'src/images/images.module';
+import { ToolsModule } from 'src/tools/tools.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ImagesModule } from 'src/images/images.module';
       },
     ]),
     ImagesModule,
+    ToolsModule
   ],
   controllers: [BrandsController],
   providers: [BrandsService],
