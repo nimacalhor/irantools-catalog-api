@@ -34,8 +34,11 @@ export class ToolsController {
   async getToolList(
     @Query(ModifyPaginationPipe) query: GetToolsQueryDto,
   ): ControllerReturnType {
+    const { brand, category, title, code, ...paginationOptions } = query;
+    console.log({ query });
     const { docs, ...paginateInfo } = await this.toolsService.getToolList(
-      query as unknown as PaginateOptions,
+      { brand, category, title, code },
+      paginationOptions as unknown as PaginateOptions,
     );
 
     return {
@@ -49,7 +52,7 @@ export class ToolsController {
   @Get('/:toolId')
   @HttpCode(HttpStatus.OK)
   async getToolDetail(@Param('toolId') toolId: string): ControllerReturnType {
-    console.log({toolId});
+    console.log({ toolId });
     const tool = await this.toolsService.getTool(toolId);
 
     return {
