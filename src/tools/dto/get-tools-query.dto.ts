@@ -28,5 +28,22 @@ export class GetToolsQueryDto {
   @IsString()
   @IsOptional()
   populate?: string;
+
+  @IsString()
+  @IsOptional()
+  title?: string;
+
+  @IsString()
+  @IsOptional()
+  code?: string;
+
+  @IsString()
+  @IsOptional()
+  brand?: string;
+
+  @IsString()
+  @IsOptional()
+  category?: string;
+
   //
 }

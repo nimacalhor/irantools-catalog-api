@@ -69,11 +69,11 @@ export class ToolsService {
     return newTool;
   }
 
-  getToolList(paginateOptions?: PaginateOptions) {
-    return this.toolModel.paginate(
-      {},
-      { ...paginateOptions, populate: this._toolPopulate },
-    );
+  getToolList(query: FilterQuery<Tool> = {}, paginateOptions?: PaginateOptions) {
+    return this.toolModel.paginate(query, {
+      ...paginateOptions,
+      populate: this._toolPopulate,
+    });
   }
 
   async getTool(toolId: string) {
