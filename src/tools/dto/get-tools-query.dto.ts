@@ -31,7 +31,7 @@ export class GetToolsQueryDto {
 
   @IsString()
   @IsOptional()
-  title?: string;
+  name?: string;
 
   @IsString()
   @IsOptional()

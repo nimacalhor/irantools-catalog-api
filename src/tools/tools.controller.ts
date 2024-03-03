@@ -34,10 +34,11 @@ export class ToolsController {
   async getToolList(
     @Query(ModifyPaginationPipe) query: GetToolsQueryDto,
   ): ControllerReturnType {
-    const { brand, category, title, code, ...paginationOptions } = query;
-    console.log({ query });
+     
+    const { brand, category, name, code, ...paginationOptions } = query;
+     
     const { docs, ...paginateInfo } = await this.toolsService.getToolList(
-      { brand, category, title, code },
+      { brand, category, name, code },
       paginationOptions as unknown as PaginateOptions,
     );
 

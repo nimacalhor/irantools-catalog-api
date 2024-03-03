@@ -27,7 +27,7 @@ export class CustomValidationPipe extends ValidationPipe {
     super(...args, {
       //
       exceptionFactory(errors: Errs[]) {
-        debugger;
+         
         const returnValue: ErrorReturnType = {
           data: {
             paths: errors.map((err) => err.property),

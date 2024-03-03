@@ -69,11 +69,22 @@ export class ToolsService {
     return newTool;
   }
 
-  getToolList(query: FilterQuery<Tool> = {}, paginateOptions?: PaginateOptions) {
-    return this.toolModel.paginate(query, {
+  async getToolList(
+    query: FilterQuery<Tool> = {},
+    paginateOptions?: PaginateOptions,
+  ) {
+    query = this._filterEmptyValues({
+      ...query,
+      name: query.name ? { $regex: new RegExp(query.name, "img")} : undefined,
+      code: query.code ? { $regex: new RegExp(query.code, "img")} : undefined,
+    });
+     
+    const listResult = await this.toolModel.paginate(query, {
       ...paginateOptions,
       populate: this._toolPopulate,
     });
+     
+    return listResult;
   }
 
   async getTool(toolId: string) {
@@ -97,5 +108,12 @@ export class ToolsService {
     return;
   }
 
+  private _filterEmptyValues(obj: Record<string, any>): Record<string, string> {
+    return Object.fromEntries(
+      Object.entries(obj).filter(([key, value]) => {
+        return value !== null && value !== undefined && value !== '';
+      }),
+    );
+  }
   //
 }

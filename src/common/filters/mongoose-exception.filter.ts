@@ -30,7 +30,7 @@ export class MongooseExceptionFilter
     else if (exception instanceof MongoServerError)
       errRes = this._handleMongoError(exception);
 
-    debugger;
+     
     if (!errRes) throw this._getDefaultErr();
 
     response.status(HttpStatus.BAD_REQUEST).json(errRes);
@@ -39,7 +39,7 @@ export class MongooseExceptionFilter
   private _handleValidationError(
     err: MongooseNativeError.ValidationError,
   ): ErrorReturnType {
-    debugger;
+     
     const { errors } = err;
     const result: ErrorReturnType = {
       ok: false,
@@ -54,7 +54,7 @@ export class MongooseExceptionFilter
   private _handleCastError(
     err: MongooseNativeError.CastError,
   ): ErrorReturnType {
-    debugger;
+     
     const result: ErrorReturnType = {
       ok: false,
       data: err,
